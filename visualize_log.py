@@ -56,10 +56,12 @@ if __name__ == "__main__":
                     "timeouts": [],
                     "errors": []
                 }
-
+            hosts[host]["timestamps"].append(dt)
+            
             event_start = line.index(':', date_end) + 2
             event_text = line[event_start:].strip()
             if event_text == 'Timeout' or event_text == 'Error':
+                hosts[host]["values"].append(None)
                 match event_text:
                     case 'Timeout':
                         hosts[host]["timeouts"].append(dt)
@@ -68,7 +70,6 @@ if __name__ == "__main__":
             else:
                 ms_value, ms_unit = event_text.split()
                 assert ms_unit == 'ms'
-                hosts[host]["timestamps"].append(dt)
                 hosts[host]["values"].append(float(ms_value))
                 
         for host_id, (host, data) in enumerate(hosts.items()):
@@ -82,13 +83,13 @@ if __name__ == "__main__":
             plt.xlabel('Time')
             plt.ylabel('Ping (ms)')
             plt.title('Ping Log')
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %-d %H:%M:%S'))
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %d %H:%M:%S'))
             plt.gca().xaxis.set_major_locator(plt.MaxNLocator(10))
             plt.gcf().autofmt_xdate()
-            for timeout in timeouts:
-                plt.axvline(x=timeout, color=color, linestyle='--', label=f"{host} timeout")
-            for error in errors:
-                plt.axvline(x=error, color=color, linestyle=':', label=f"{host} error")
+            for i, timeout in enumerate(timeouts):
+                plt.axvline(x=timeout, color=color, linestyle='--', label=f"{host} timeout" if i == 0 else None)
+            for i, error in enumerate(errors):
+                plt.axvline(x=error, color=color, linestyle=':', label=f"{host} error" if i == 0 else None)
 
         plt.legend()
         plt.tight_layout()
