@@ -108,8 +108,7 @@ if __name__ == "__main__":
             axs[0].set_title('Ping Log')
             axs[0].xaxis.set_major_formatter(mdates.DateFormatter('%b %d %H:%M:%S'))
             axs[0].xaxis.set_major_locator(plt.MaxNLocator('auto'))
-            # rotate and align the tick labels so they look better
-            axs[0].set_xticklabels(axs[0].get_xticklabels(), rotation=45, ha='right')
+            fig.autofmt_xdate()
             for i, timeout in enumerate(timeouts):
                 axs[0].axvline(x=timeout, color=color, linestyle='--', label=f"{host} timeout" if i == 0 else None)
             for i, error in enumerate(errors):
