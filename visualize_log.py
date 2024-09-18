@@ -120,8 +120,9 @@ if __name__ == "__main__":
             df = pd.DataFrame(columns=['host', 'timestamp', 'value'])
             for host, data in hosts.items():
                 for timestamp, value in zip(data["timestamps"], data["values"]):
-                    df.loc[len(df)] = [host, timestamp, value]
-            sns.violinplot(ax=axs[1], x='host', y='value', data=df, scale='width', hue='host', cut=0, inner='quartile', palette=cmap)
+                    if value is not None:
+                        df.loc[len(df)] = [host, timestamp, value]
+            sns.violinplot(ax=axs[1], x='host', y='value', data=df, density_norm='width', hue='host', cut=0, inner='quartile', palette=cmap)
             
         plt.tight_layout()
         if args.live:
